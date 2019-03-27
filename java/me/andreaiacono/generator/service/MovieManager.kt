@@ -14,6 +14,7 @@ class MovieManager(config: Config) {
         println("Loading from NAS")
         nasService.getMoviesDirectories()
             .filter { it.isDirectory }
+            .take(15)
             .forEach { dir ->
                 println("Reading [${dir.name}]")
                 val xml = dir
@@ -29,6 +30,8 @@ class MovieManager(config: Config) {
                     createdMovieDirs.add(movie.title)
                 }
             }
+        notCreatedMovieDirs.sort()
+        createdMovieDirs.sort()
     }
 
     fun getMoviePoster(dirName: String): BufferedImage {

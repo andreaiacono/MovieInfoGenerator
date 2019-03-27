@@ -5,75 +5,63 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import me.andreaiacono.generator.Generator
 import me.andreaiacono.generator.model.Config
 import me.andreaiacono.generator.service.MovieManager
-import java.awt.EventQueue
+import java.awt.*
 import java.io.File
 import javax.swing.*
 import javax.swing.SwingUtilities
+import javax.swing.JTabbedPane
 
 
-class KotlinSwingSimpleEx(title: String) : JFrame() {
+class Main(title: String) : JFrame() {
 
     val movieManager = MovieManager(loadConfig())
 
     init {
-        createUI(title)
-    }
-
-    private fun createUI(title: String) {
-
         setTitle(title)
 
         defaultCloseOperation = JFrame.EXIT_ON_CLOSE
-        setSize(300, 200)
+        setSize(800, 600)
         setLocationRelativeTo(null)
 
-        val existingPostersModel = DefaultListModel<String>()
-        existingPostersModel.addElement("Jane Doe")
-        existingPostersModel.addElement("John Smith")
-        existingPostersModel.addElement("Kathy Green")
+        val tabbedPane = JTabbedPane()
+        val existingMoviesPanel = ExistingMoviesPanel(movieManager)
+        val unknownMoviesPanel = UnknownMoviesPanel()
 
-        val notExistingPostersModel = DefaultListModel<String>()
-        existingPostersModel.addElement("Jsdqs")
-        existingPostersModel.addElement("Johsqdaith")
-        existingPostersModel.addElement("Kaqsdsqreen")
-
-
-        val existingMoviesList = JList(existingPostersModel)
-        add(existingMoviesList)
-
-        val notExistingMoviesList = JList(notExistingPostersModel)
-        add(notExistingMoviesList)
+        tabbedPane.addTab("Existing Movies", existingMoviesPanel)
+        tabbedPane.addTab("Unknown Movies", unknownMoviesPanel)
 
         // creates the menu bar
         val menuBar = JMenuBar()
-
-        // Create the file menu
         val menu = JMenu("File")
         menuBar.add(menu)
 
         // Create the file menu items
-        val item = JMenuItem("Load")
+        val item = JMenuItem("Scan NAS")
         menu.add(item)
-
         item.addActionListener {
+            cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
             Thread(Runnable {
-                movieManager.loadData()
-                SwingUtilities.invokeLater {
-//                    existingPostersModel.clear()
-                    existingPostersModel.addAll(movieManager.createdMovieDirs)
-
-//                    notExistingPostersModel.clear()
-                    notExistingPostersModel.addAll(movieManager.createdMovieDirs)
+                try {
+                    movieManager.loadData()
+                    SwingUtilities.invokeLater {
+                        existingMoviesPanel.existingPostersModel.addAll(movieManager.createdMovieDirs)
+                        unknownMoviesPanel.unknownPostersModel.addAll(movieManager.notCreatedMovieDirs)
+                    }
+                }
+                finally {
+                    cursor = Cursor.getDefaultCursor()
                 }
             }).start()
         }
         jMenuBar = menuBar
+
+        add(tabbedPane)
     }
 }
 
 private fun createAndShowGUI() {
 
-    val frame = KotlinSwingSimpleEx("MovieInfoGenerator")
+    val frame = Main("MovieInfoGenerator")
     frame.isVisible = true
 
 }

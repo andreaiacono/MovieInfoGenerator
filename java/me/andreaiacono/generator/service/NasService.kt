@@ -14,7 +14,8 @@ class NasService(val url: String) {
     }
 
     private fun getFullImage(dirName: String, filename: String): BufferedImage {
-        val fullName = "$url$dirName$filename"
+        val fullName = "$url$dirName/$filename"
+        println("loading $fullName")
         return ImageIO.read(SmbFile(fullName).inputStream)
     }
 
