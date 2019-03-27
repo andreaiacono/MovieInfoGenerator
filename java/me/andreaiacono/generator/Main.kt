@@ -1,5 +1,8 @@
 package me.andreaiacono.generator
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import me.andreaiacono.generator.model.Config
 import me.andreaiacono.generator.model.Movie
 import me.andreaiacono.generator.service.OpenMovieReader
 import me.andreaiacono.generator.service.TmdbReader
@@ -37,13 +40,14 @@ fun main(args: Array<String>) {
 //    }
 //
 //    exit(-1)
+
+    val config = loadConfig()
     val template = Template()
 //    val cover = ImageIO.read(File(Generator::class.java.getResource("/cover.jpg").file))
 //    val background = ImageIO.read(File(Generator::class.java.getResource("/background.jpg").file))
-    val openMovieReader = OpenMovieReader("http://www.omdbapi.com/", "13c1fc2a")
     val tmdbReader = TmdbReader(
-        "https://api.themoviedb.org/",
-        "b77a516e6e552bf27fb2f38146d790d0",
+        config.tmdbUrl,
+        config.tmdbApiKey,
         "it-IT"
     )
 
@@ -71,4 +75,11 @@ fun main(args: Array<String>) {
     val cover = Thumbnails.of(tmdbReader.getPoster(movieInfo.posterPath!!)).forceSize(154, 231).asBufferedImage()
     val background = Thumbnails.of(tmdbReader.getBackground(movieInfo.backdropPath!!)).forceSize(1920, 1080).asBufferedImage()
     ImageIO.write(generator.generate(background, cover), "PNG", File("result.png"))
+}
+
+
+fun loadConfig(): Config {
+    val configYaml = File(Generator::class.java.getResource("/config.yaml").file).readText()
+    val mapper = ObjectMapper(YAMLFactory())
+    return mapper.readValue(configYaml, Config::class.java)
 }
