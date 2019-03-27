@@ -20,16 +20,20 @@ fun main(args: Array<String>) {
 
 //    val search = TmdbReader.("Blade Runner")
 //    println(search.search.joinToString { it.title })
-    val tmdbMovie = tmdbReader.getMovieInfo("329865")
-
+    val id = "329865"
+    val tmdbMovie = tmdbReader.getMovieInfo(id)
+//    val tmdbMovieCredits = tmdbReader.getMovieCredits(id)
+    val actors = tmdbReader.getMovieActors(id, 5)
     println("movie: ${tmdbMovie}")
-    val movie = Movie(
-        tmdbMovie.title!!,
-        tmdbMovie.overview!!,
-        tmdbMovie.listOf("Denis Villeneuve"),
-        116,
-        MovieResolution.ULTRA_HD
-    )
+    println("movie actors: $actors")
+
+//    val movie = Movie(
+//        tmdbMovie.title!!,
+//        tmdbMovie.overview!!,
+//        tmdbMovie.listOf("Denis Villeneuve"),
+//        116,
+//        MovieResolution.ULTRA_HD
+//    )
 //    val generator = Generator(movie, background, cover, template)
 //
 //    ImageIO.write(generator.generate(), "PNG", File("result.png"))

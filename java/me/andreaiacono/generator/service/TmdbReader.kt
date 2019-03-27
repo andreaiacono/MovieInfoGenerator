@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import me.andreaiacono.generator.model.Search
 import me.andreaiacono.generator.model.TmdbMovie
+import me.andreaiacono.generator.model.TmdbMovieCredits
 import java.awt.image.BufferedImage
 import java.net.URL
 import javax.imageio.ImageIO
@@ -34,8 +35,21 @@ class TmdbReader (val url: String, val apiKey: String, val language: String) {
         return jsonMapper.readValue(jsonResult, TmdbMovie::class.java)
     }
 
+    fun getMovieCredits(id : String): TmdbMovieCredits       {
+        val jsonResult = URL("${url}3/movie/$id/credits$movieReqString").readText()
+        return jsonMapper.readValue(jsonResult, TmdbMovieCredits::class.java)
+    }
+
     fun getPoster(imageId: String): BufferedImage {
             val url = URL("$imageUrl$imageId")
             return ImageIO.read(url)
+    }
+
+    fun getMovieActors(id: String): List<String?> {
+        return getMovieCredits(id).cast!!.map { it!!.name }.toList()
+    }
+
+    fun getMovieActors(id: String, take: Int): List<String?> {
+        return getMovieCredits(id).cast!!.take(take).map { it!!.name }.toList()
     }
 }
