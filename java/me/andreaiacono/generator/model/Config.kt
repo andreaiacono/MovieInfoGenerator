@@ -8,5 +8,8 @@ data class Config(
     var tmdbApiKey: String,
 
     @JsonProperty("tmdbUrl")
-    var tmdbUrl: String
+    var tmdbUrl: String,
+
+    @JsonProperty("nasUrl")
+    var nasUrl: String
 )
