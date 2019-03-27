@@ -1,6 +1,5 @@
 package me.andreaiacono.generator
 
-import main.java.me.andreaiacono.generator.Movie
 import java.io.File
 import javax.imageio.ImageIO
 
