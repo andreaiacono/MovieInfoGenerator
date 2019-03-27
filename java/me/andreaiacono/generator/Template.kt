@@ -1,4 +1,4 @@
-package main.java.me.andreaiacono.generator
+package me.andreaiacono.generator
 
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO.read

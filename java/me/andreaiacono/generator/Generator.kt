@@ -1,5 +1,6 @@
-package main.java.me.andreaiacono.generator
+package me.andreaiacono.generator
 
+import main.java.me.andreaiacono.generator.Movie
 import net.coobird.thumbnailator.Thumbnails
 import java.awt.*
 import java.awt.image.BufferedImage
@@ -52,7 +53,7 @@ class Generator(val movie: Movie, val background: BufferedImage, val cover: Buff
         colTop += (g.font.size*1.6).toInt()
         movie.cast.forEach{
             g.drawString(it, colLeft, colTop)
-            colTop += (g.font.size*1.3).toInt()
+            colTop += (g.font.size*1.25).toInt()
         }
 
         return background

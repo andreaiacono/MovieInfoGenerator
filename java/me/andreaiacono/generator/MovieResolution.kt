@@ -1,4 +1,4 @@
-package main.java.me.andreaiacono.generator
+package me.andreaiacono.generator
 
 enum class MovieResolution {
         LOW_RES,
