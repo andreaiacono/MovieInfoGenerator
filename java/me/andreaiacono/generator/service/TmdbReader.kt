@@ -1,12 +1,12 @@
-package me.andreaiacono.generator
+package me.andreaiacono.generator.service
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import me.andreaiacono.generator.model.Search
+import me.andreaiacono.generator.model.TmdbMovie
 import java.awt.image.BufferedImage
-import java.io.BufferedInputStream
 import java.net.URL
-import java.io.IOException
 import javax.imageio.ImageIO
 
 
@@ -34,8 +34,8 @@ class TmdbReader (val url: String, val apiKey: String, val language: String) {
         return jsonMapper.readValue(jsonResult, TmdbMovie::class.java)
     }
 
-    fun getPoster(uri: String): BufferedImage {
-            val url = URL("${imageUrl}$uri")
+    fun getPoster(imageId: String): BufferedImage {
+            val url = URL("$imageUrl$imageId")
             return ImageIO.read(url)
     }
 }

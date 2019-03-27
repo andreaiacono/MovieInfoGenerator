@@ -1,5 +1,6 @@
 package me.andreaiacono.generator
 
+import me.andreaiacono.generator.model.Movie
 import net.coobird.thumbnailator.Thumbnails
 import java.awt.*
 import java.awt.image.BufferedImage

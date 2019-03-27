@@ -1,4 +1,4 @@
-package me.andreaiacono.generator
+package me.andreaiacono.generator.model
 
 import java.util.*
 import com.fasterxml.jackson.annotation.JsonFormat

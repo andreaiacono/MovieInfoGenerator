@@ -1,8 +1,10 @@
-package me.andreaiacono.generator
+package me.andreaiacono.generator.service
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import me.andreaiacono.generator.model.ApiMovie
+import me.andreaiacono.generator.model.Search
 import java.net.URL
 
 class OpenMovieReader(url: String, apiKey: String) {
