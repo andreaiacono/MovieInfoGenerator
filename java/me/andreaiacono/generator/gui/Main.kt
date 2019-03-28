@@ -44,7 +44,7 @@ class Main(title: String) : JFrame() {
                     movieManager.loadData()
                     SwingUtilities.invokeLater {
                         existingMoviesPanel.reloadData(movieManager.createdMovieDirs)
-                        unknownMoviesPanel.reloadData(movieManager.unknowndMovieDirs)
+                        unknownMoviesPanel.reloadData(movieManager.unknownMovieDirs)
                     }
                 }
                 finally {

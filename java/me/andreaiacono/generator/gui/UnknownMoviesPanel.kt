@@ -7,7 +7,7 @@ import javax.swing.*
 
 class UnknownMoviesPanel(val movieManager: MovieManager) : JPanel() {
 
-    val movieListModel = DefaultListModel<String>()
+    val movieListModel = DefaultListModel<Pair<String, String>>()
     val searchResultsListModel = DefaultListModel<String>()
     var selectedMovie = -1
     var selectedResult = -1
@@ -66,7 +66,7 @@ class UnknownMoviesPanel(val movieManager: MovieManager) : JPanel() {
         lsl.putConstraint(SpringLayout.EAST, scrollableSearchResultsList, -5, SpringLayout.EAST, leftPanel)
 
 
-        val previewPanel = PreviewPanel()
+        val previewPanel = PreviewPanel(movieManager)
         val spDivider = JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, previewPanel)
         spDivider.dividerLocation = 200
 
@@ -81,7 +81,7 @@ class UnknownMoviesPanel(val movieManager: MovieManager) : JPanel() {
         unknownMoviesList.addListSelectionListener {
             if (unknownMoviesList.selectedIndex != selectedMovie) {
                 selectedMovie = unknownMoviesList.selectedIndex
-                titleInput.text = movieListModel[selectedMovie]
+                titleInput.text = movieListModel[selectedMovie].first
                 searchMovie()
             }
         }
@@ -94,13 +94,18 @@ class UnknownMoviesPanel(val movieManager: MovieManager) : JPanel() {
 
                 try {
                     val id = (searchResultsListModel[searchResultsList.selectedIndex].substringAfterLast(" "))
-                    val (image, xml) = movieManager.generatePoster(id, movieListModel[unknownMoviesList.selectedIndex] + "/")
+                    val dirName = movieListModel[unknownMoviesList.selectedIndex].second + "/"
+                    val (image, xml, coverUri) = movieManager.generatePoster(id, dirName)
                     previewPanel.setPoster(image)
                     previewPanel.setXml(xml)
-
-                } catch (ex: Exception) {
+                    previewPanel.setDirname(dirName)
+                    previewPanel.setId(id)
+                    previewPanel.setCoverUri(coverUri)
+                }
+                catch (ex: Exception) {
                     ErrorForm(ex).isVisible = true
-                } finally {
+                }
+                finally {
                     cursor = Cursor.getDefaultCursor()
                 }
             }
@@ -122,7 +127,7 @@ class UnknownMoviesPanel(val movieManager: MovieManager) : JPanel() {
         }
     }
 
-    fun reloadData(movies: List<String>) {
+    fun reloadData(movies: List<Pair<String, String>>) {
         movieListModel.removeAllElements()
         movieListModel.addAll(movies)
     }

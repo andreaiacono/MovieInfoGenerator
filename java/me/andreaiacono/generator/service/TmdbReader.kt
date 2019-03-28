@@ -37,7 +37,7 @@ class TmdbReader(val url: String, val apiKey: String, val language: String) {
         return jsonMapper.readValue(jsonResult, TmdbMovieInfo::class.java)
     }
 
-    fun getPoster(imageId: String): BufferedImage {
+    fun getCover(imageId: String): BufferedImage {
         val url = URL("$urlImage154$imageId")
         return ImageIO.read(url)
     }

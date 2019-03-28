@@ -10,7 +10,7 @@ import javax.swing.ListSelectionModel
 class ExistingMoviesPanel(val movieManager: MovieManager) : JPanel() {
 
 
-    private val listModel = DefaultListModel<String>()
+    private val listModel = DefaultListModel<Pair<String, String>>()
     private var selected = -1
 
     init {
@@ -25,7 +25,7 @@ class ExistingMoviesPanel(val movieManager: MovieManager) : JPanel() {
                 cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
                 try {
                     val dirName = (listModel[existingMoviesList.selectedIndex])
-                    posterViewer.setPoster(movieManager.getMoviePoster(dirName))
+                    posterViewer.setPoster(movieManager.getMoviePoster(dirName.second))
                 }
                 catch (ex: Exception) {
                     ErrorForm(ex).isVisible = true
@@ -50,7 +50,7 @@ class ExistingMoviesPanel(val movieManager: MovieManager) : JPanel() {
         add(spDivider)
     }
 
-    fun reloadData(movies: List<String>) {
+    fun reloadData(movies: List<Pair<String, String>>) {
         listModel.removeAllElements()
         listModel.addAll(movies)
     }
