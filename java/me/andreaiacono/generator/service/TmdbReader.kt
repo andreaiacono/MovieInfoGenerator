@@ -27,7 +27,7 @@ class TmdbReader(val url: String, val apiKey: String, val language: String) {
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
     fun searchMovie(title: String, page: Int = 1): TmdbSearch {
-        val jsonResult = URL("${url}3/search/movie$movieReqString&query=$title&include_adult=false&page=$page").readText()
+        val jsonResult = URL("${url}3/search/movie$movieReqString&query=${title.replace(" ", "%20")}&include_adult=false&page=$page").readText()
         return jsonMapper.readValue(jsonResult, TmdbSearch::class.java)
     }
 

@@ -47,7 +47,7 @@ class Generator(val movie: TmdbMovieInfo, val videoInfo: String, val template: T
         colTop += (g.font.size * 0.7).toInt()
         g.drawString(videoInfo, colLeft, colTop)
         colTop += (g.font.size * 1.4).toInt()
-        g.drawString(minutesToHoursString(movie.runtime!!), colLeft, colTop)
+        g.drawString(minutesToHoursString(movie.runtime ?: 0), colLeft, colTop)
         colTop += (g.font.size*1.5).toInt()
         g.drawString(movie.getDirectors().joinToString(), colLeft, colTop)
         colTop += (g.font.size*1.6).toInt()

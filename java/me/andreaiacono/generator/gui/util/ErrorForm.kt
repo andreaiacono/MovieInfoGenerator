@@ -1,4 +1,4 @@
-package me.andreaiacono.generator.gui
+package me.andreaiacono.generator.gui.util
 
 import java.awt.Dimension
 import java.awt.event.ActionEvent

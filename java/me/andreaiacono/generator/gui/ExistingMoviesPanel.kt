@@ -1,5 +1,6 @@
 package me.andreaiacono.generator.gui
 
+import me.andreaiacono.generator.gui.util.ErrorForm
 import me.andreaiacono.generator.service.MovieManager
 import java.awt.Cursor
 import javax.swing.*
@@ -25,13 +26,18 @@ class ExistingMoviesPanel(val movieManager: MovieManager) : JPanel() {
                 try {
                     val dirName = (listModel[existingMoviesList.selectedIndex])
                     posterViewer.setPoster(movieManager.getMoviePoster(dirName))
-                } finally {
+                }
+                catch (ex: Exception) {
+                    ErrorForm(ex).isVisible = true
+                }
+                finally {
                     cursor = Cursor.getDefaultCursor()
                 }
             }
         }
         val scrollableExistingMovieList = JScrollPane(existingMoviesList)
         val spDivider = JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollableExistingMovieList, posterViewer)
+        spDivider.dividerLocation = 200
 
         val sl = SpringLayout()
         layout = sl

@@ -1,30 +1,36 @@
 package me.andreaiacono.generator
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import jcifs.smb.SmbFile
-import me.andreaiacono.generator.model.Config
-import me.andreaiacono.generator.model.Movie
-import me.andreaiacono.generator.service.NasService
-import me.andreaiacono.generator.service.OpenMovieReader
 import me.andreaiacono.generator.service.TmdbReader
-import net.coobird.thumbnailator.Thumbnails
-import org.apache.tika.metadata.Metadata
-import org.apache.tika.parser.ParseContext
-import org.apache.tika.parser.mp4.MP4Parser
-import java.io.File
-import java.io.FileInputStream
-import javax.imageio.ImageIO
-import java.lang.System.exit
-import org.apache.tika.sax.BodyContentHandler
-import tornadofx.launch
-import java.awt.EventQueue
-import javax.swing.JFrame
+import me.andreaiacono.generator.gui.loadConfig
+import net.bramp.ffmpeg.FFprobe
 
 
 
-fun mainw(args: Array<String>) {
 
+
+fun main(args: Array<String>) {
+
+    val ffprobe = FFprobe("/usr/local/bin/ffprobe")
+    val probeResult = ffprobe.probe("/andrea/mnt/Snowden/Snowden.mkv")
+//    val probeResult = ffprobe.probe("/andrea/mnt/Lei/Lei - Her (2013).ita.eng.sub.ita.MIRCrew.avi")
+//    val probeResult = ffprobe.probe("/andrea/mnt/The Forger/The.Forger.IL.Falsario.2014.BDRip.1080p.DTS.ITA.ENG.x264.sub.DVS.mkv")
+//    val probeResult = ffprobe.probe("/andrea/mnt/Shrek/Shrek_t00.mkv")
+
+    val format = probeResult.getFormat()
+    System.out.format(
+        "%nFile: '%s' ; Format: '%s' ; Duration: %.3fs",
+        format.filename,
+        format.format_long_name,
+        format.duration
+    )
+
+    val stream = probeResult.getStreams()[0]
+    println("\n${stream.width}x${stream.height} ${(stream.avg_frame_rate.numerator/stream.avg_frame_rate.denominator)}f/s [${stream.codec_name}]")
+    System.out.format("Ratio: %s ; Width: %dpx ; Height: %dpx",
+        stream.display_aspect_ratio,
+        stream.width,
+        stream.height
+    );
 //    val config = loadConfig()
 //    val nas = NasService(config.nasUrl)
 //
@@ -56,17 +62,17 @@ fun mainw(args: Array<String>) {
 //    exit(-1)
 //
 //    val config = loadConfig()
-//    val template = Template()
-////    val cover = ImageIO.read(File(Generator::class.java.getResource("/cover.jpg").file))
-////    val background = ImageIO.read(File(Generator::class.java.getResource("/background.jpg").file))
+////    val template = Template()
+//////    val cover = ImageIO.read(File(Generator::class.java.getResource("/cover.jpg").file))
+//////    val background = ImageIO.read(File(Generator::class.java.getResource("/background.jpg").file))
 //    val tmdbReader = TmdbReader(
 //        config.tmdbUrl,
 //        config.tmdbApiKey,
 //        "it-IT"
 //    )
-//
-////    val search = TmdbReader.("Blade Runner")
-////    println(search.search.joinToString { it.title })
+////
+//////    val search = TmdbReader.("Blade Runner")
+//////    println(search.search.joinToString { it.title })
 //    val id = "606"
 ////    val id = "329865"
 //    val movieInfo = tmdbReader.getMovieInfo(id)
@@ -85,10 +91,10 @@ fun mainw(args: Array<String>) {
 //        movieInfo.runtime!!,
 //        "1080p @ 29fps"
 //    )
-//    val generator = Generator(movie, template)
-//    val cover = Thumbnails.of(tmdbReader.getPoster(movieInfo.posterPath!!)).forceSize(154, 231).asBufferedImage()
-//    val background = Thumbnails.of(tmdbReader.getBackground(movieInfo.backdropPath!!)).forceSize(1920, 1080).asBufferedImage()
-//    ImageIO.write(generator.generate(background, cover), "PNG", File("result.png"))
-//    }
+////    val generator = Generator(movie, template)
+////    val cover = Thumbnails.of(tmdbReader.getPoster(movieInfo.posterPath!!)).forceSize(154, 231).asBufferedImage()
+////    val background = Thumbnails.of(tmdbReader.getBackground(movieInfo.backdropPath!!)).forceSize(1920, 1080).asBufferedImage()
+////    ImageIO.write(generator.generate(background, cover), "PNG", File("result.png"))
+////    }
 }
 

@@ -12,7 +12,7 @@ import java.lang.Math.min
 class MovieManager(val config: Config) {
 
     val createdMovieDirs = mutableListOf<String>()
-    val notCreatedMovieDirs = mutableListOf<String>()
+    val unknowndMovieDirs = mutableListOf<String>()
     val nasService = NasService(config.nasUrl)
     val tmdbReader = TmdbReader(config.tmdbUrl, config.tmdbApiKey, "it-IT")
 
@@ -25,17 +25,15 @@ class MovieManager(val config: Config) {
                 println("Reading [${dir.name}]")
                 val xml = dir
                     .listFiles()
-                    .firstOrNull {
-                        !it.name.startsWith(".") && it.name.toLowerCase().endsWith(".xml")
-                    }
+                    .firstOrNull { !it.name.startsWith(".") && it.name.toLowerCase().endsWith(".xml") }
                 if (xml == null) {
-                    notCreatedMovieDirs.add(dir.name)
+                    unknowndMovieDirs.add(dir.name.dropLast(1))
                 } else {
                     val movie = fromXml(xml.inputStream.readBytes().toString(Charsets.UTF_8))
                     createdMovieDirs.add(movie.title)
                 }
             }
-        notCreatedMovieDirs.sort()
+        unknowndMovieDirs.sort()
         createdMovieDirs.sort()
     }
 
@@ -43,13 +41,13 @@ class MovieManager(val config: Config) {
 
         val search = tmdbReader.searchMovie(title)
         val results = mutableListOf<String>()
-        results.addAll(search.results?.map { "${it?.title} [${it?.releaseDate}] ${it?.id}" }!!.toList() )
+        results.addAll(search.results?.map { "${it?.title} [${it?.releaseDate}] ${it?.id}" }!!.toList())
 
-        for (i in 2..min(search.totalPages!!, 40)) {
-            val search = tmdbReader.searchMovie(title, i)
-            results.addAll(search.results?.map { "${it?.title} [${it?.releaseDate}] ${it?.id}" }!!.toList() )
+        for (i in 2..min(search.totalPages!!, 10)) {
+            val pageSearch = tmdbReader.searchMovie(title, i)
+            results.addAll(pageSearch.results?.map { "${it?.title} [${it?.releaseDate}] ${it?.id}" }!!.toList())
         }
-
+        results.sort()
         return results
     }
 
@@ -57,11 +55,10 @@ class MovieManager(val config: Config) {
         return nasService.getPoster(dirName)
     }
 
-    fun generatePoster(id: String, dirName: String): BufferedImage {
+    fun generatePoster(id: String, dirName: String): Pair<BufferedImage, String> {
 
         val videoFilename = nasService.getVideoFilename(dirName)
         if (videoFilename != null) {
-
             val template = Template()
             val movieInfo = tmdbReader.getMovieInfo(id)
             val videoInfo = getMovieMetadata(config.ffprobePath, "${config.moviesDir}$dirName$videoFilename")
@@ -76,9 +73,9 @@ class MovieManager(val config: Config) {
                     1920,
                     1080
                 ).asBufferedImage() else BufferedImage(1, 1, 1)
-            return generator.generate(background, cover)
+            return Pair(generator.generate(background, cover), movieInfo.toXml())
         }
 
-        return BufferedImage(1, 1, 1)
+        return Pair(BufferedImage(1, 1, 1), "")
     }
 }

@@ -1,8 +1,11 @@
 package me.andreaiacono.generator.model
+
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.text.SimpleDateFormat
+import java.util.*
 
 
-data class TmdbMovieInfo (
+data class TmdbMovieInfo(
 
     @JsonProperty("adult")
     val adult: Boolean? = false,
@@ -183,5 +186,28 @@ data class TmdbMovieInfo (
 
     fun getDirectors(): List<String?> {
         return credits!!.crew!!.filter { it!!.job == "Director" }.map { it!!.name }.toList()
+    }
+
+    fun toXml() = """<?xml version="1.0" encoding="UTF-8"?>
+<details>
+    <movie xmlns:xsi="http:--www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http:--www.w3.org/2001/XMLSchema">
+        <title>$title</title>
+        <sorting_title>$title</sorting_title>
+        <year>${releaseDate?.take(4)}</year>
+        <plot>$overview</plot>
+        <date>${getCurrentDate()}</date>
+        <runtime>$runtime</runtime>
+        <genres>
+${genres?.joinToString("") { "            <genre>${it?.name}</genre>\n" }}        </genres>
+        <director>
+${getDirectors().joinToString("") { "            <name>$it</name>\n" }}        </director>
+        <cast>
+${getActors(5).joinToString("") { "            <actor>$it</actor>\n" }}        </cast>
+    </movie>
+</details>"""
+
+    fun getCurrentDate(): String {
+        val sdf = SimpleDateFormat("dd/MM/yyyy")
+        return sdf.format(Date())
     }
 }

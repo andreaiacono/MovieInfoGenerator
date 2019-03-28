@@ -10,7 +10,7 @@ class PosterViewer : JPanel() {
     var image: BufferedImage? = null
 
     override fun paint(g: Graphics?) {
-        super.paintComponent(g)
+        super.paint(g)
         if (image != null) {
             g?.drawImage(Thumbnails.of(image).size(width, height).asBufferedImage(), 0, 0, this)
         }
@@ -18,6 +18,7 @@ class PosterViewer : JPanel() {
 
     fun setPoster(image: BufferedImage) {
         this.image = image
+        invalidate()
         repaint()
     }
 }
