@@ -92,7 +92,7 @@ fun main(args: Array<String>) {
 //        "1080p @ 29fps"
 //    )
 ////    val generator = Generator(movie, template)
-////    val cover = Thumbnails.of(tmdbReader.getPoster(movieInfo.posterPath!!)).forceSize(154, 231).asBufferedImage()
+////    val cover = Thumbnails.of(tmdbReader.getCover(movieInfo.posterPath!!)).forceSize(154, 231).asBufferedImage()
 ////    val background = Thumbnails.of(tmdbReader.getBackground(movieInfo.backdropPath!!)).forceSize(1920, 1080).asBufferedImage()
 ////    ImageIO.write(generator.generate(background, cover), "PNG", File("result.png"))
 ////    }

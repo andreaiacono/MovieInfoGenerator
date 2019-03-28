@@ -22,12 +22,6 @@ class MovieManager(val config: Config) {
     val unknownMovieDirs = mutableListOf<Pair<String, String>>()
     val nasService = NasService(config.nasUrl)
     val tmdbReader = TmdbReader(config.tmdbUrl, config.tmdbApiKey, "it-IT")
-    val jpegParams = JPEGImageWriteParam(null)
-
-    init {
-        jpegParams.compressionMode = ImageWriteParam.MODE_EXPLICIT
-        jpegParams.compressionQuality = 0.75f
-    }
 
     fun loadData() {
         println("Loading from NAS")
@@ -99,6 +93,10 @@ class MovieManager(val config: Config) {
             println("Writing xml to $xmlFilename")
             File(xmlFilename).writeText(xml)
 
+            val jpegParams = JPEGImageWriteParam(null)
+            jpegParams.compressionMode = ImageWriteParam.MODE_EXPLICIT
+            jpegParams.compressionQuality = 0.75f
+
             val posterFilename = "${config.moviesDir}${dirName}about.jpg"
             println("Writing poster to $posterFilename")
             val posterWriter = ImageIO.getImageWritersByFormatName("jpg").next()
@@ -107,6 +105,8 @@ class MovieManager(val config: Config) {
 
             val coverFilename = "${config.moviesDir}${dirName}folder.jpg"
             println("Writing cover to $coverFilename")
+
+            jpegParams.compressionQuality = 0.95f
             val coverWriter = ImageIO.getImageWritersByFormatName("jpg").next()
             coverWriter.output = FileImageOutputStream(File(coverFilename))
             coverWriter.write(null, IIOImage(tmdbReader.getCover(coverUri), null, null), jpegParams)
