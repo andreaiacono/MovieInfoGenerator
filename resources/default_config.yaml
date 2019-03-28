@@ -1,2 +1,4 @@
 tmdbApiKey: XXXX
 tmdbUrl: https://api.themoviedb.org/3/
+nasUrl: smb://192.168.1.1/data/
+moviesDir: /home/user/data/
