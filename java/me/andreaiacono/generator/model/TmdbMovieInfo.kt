@@ -2,7 +2,7 @@ package me.andreaiacono.generator.model
 import com.fasterxml.jackson.annotation.JsonProperty
 
 
-data class TmdbMovie(
+data class TmdbMovieInfo (
 
     @JsonProperty("adult")
     val adult: Boolean? = false,
@@ -77,11 +77,12 @@ data class TmdbMovie(
     val voteAverage: Double? = 0.0,
 
     @JsonProperty("vote_count")
-    val voteCount: Int? = 0
+    val voteCount: Int? = 0,
+
+    @JsonProperty("credits")
+    val credits: Credits? = Credits()
 ) {
-
     data class SpokenLanguage(
-
         @JsonProperty("iso_639_1")
         val iso6391: String? = "",
 
@@ -90,7 +91,6 @@ data class TmdbMovie(
     )
 
     data class Genre(
-
         @JsonProperty("id")
         val id: Int? = 0,
 
@@ -99,7 +99,6 @@ data class TmdbMovie(
     )
 
     data class ProductionCountry(
-
         @JsonProperty("iso_3166_1")
         val iso31661: String? = "",
 
@@ -108,12 +107,11 @@ data class TmdbMovie(
     )
 
     data class ProductionCompany(
-
         @JsonProperty("id")
         val id: Int? = 0,
 
         @JsonProperty("logo_path")
-        val logoPath: String? = "",
+        val logoPath: Any? = Any(),
 
         @JsonProperty("name")
         val name: String? = "",
@@ -121,4 +119,69 @@ data class TmdbMovie(
         @JsonProperty("origin_country")
         val originCountry: String? = ""
     )
+
+    data class Credits(
+        @JsonProperty("cast")
+        val cast: List<Cast?>? = listOf(),
+
+        @JsonProperty("crew")
+        val crew: List<Crew?>? = listOf()
+    ) {
+        data class Cast(
+            @JsonProperty("cast_id")
+            val castId: Int? = 0,
+
+            @JsonProperty("character")
+            val character: String? = "",
+
+            @JsonProperty("credit_id")
+            val creditId: String? = "",
+
+            @JsonProperty("gender")
+            val gender: Int? = 0,
+
+            @JsonProperty("id")
+            val id: Int? = 0,
+
+            @JsonProperty("name")
+            val name: String? = "",
+
+            @JsonProperty("order")
+            val order: Int? = 0,
+
+            @JsonProperty("profile_path")
+            val profilePath: Any? = Any()
+        )
+
+        data class Crew(
+            @JsonProperty("credit_id")
+            val creditId: String? = "",
+
+            @JsonProperty("department")
+            val department: String? = "",
+
+            @JsonProperty("gender")
+            val gender: Int? = 0,
+
+            @JsonProperty("id")
+            val id: Int? = 0,
+
+            @JsonProperty("job")
+            val job: String? = "",
+
+            @JsonProperty("name")
+            val name: String? = "",
+
+            @JsonProperty("profile_path")
+            val profilePath: Any? = Any()
+        )
+    }
+
+    fun getActors(take: Int): List<String?> {
+        return credits!!.cast!!.take(take).map { it!!.name }.toList()
+    }
+
+    fun getDirectors(): List<String?> {
+        return credits!!.crew!!.filter { it!!.job == "Director" }.map { it!!.name }.toList()
+    }
 }
