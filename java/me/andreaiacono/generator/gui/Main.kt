@@ -2,7 +2,6 @@ package me.andreaiacono.generator.gui
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import me.andreaiacono.generator.Generator
 import me.andreaiacono.generator.model.Config
 import me.andreaiacono.generator.service.MovieManager
 import java.awt.*
@@ -25,7 +24,7 @@ class Main(title: String) : JFrame() {
 
         val tabbedPane = JTabbedPane()
         val existingMoviesPanel = ExistingMoviesPanel(movieManager)
-        val unknownMoviesPanel = UnknownMoviesPanel()
+        val unknownMoviesPanel = UnknownMoviesPanel(movieManager)
 
         tabbedPane.addTab("Existing Movies", existingMoviesPanel)
         tabbedPane.addTab("Unknown Movies", unknownMoviesPanel)
@@ -44,8 +43,8 @@ class Main(title: String) : JFrame() {
                 try {
                     movieManager.loadData()
                     SwingUtilities.invokeLater {
-                        existingMoviesPanel.existingPostersModel.addAll(movieManager.createdMovieDirs)
-                        unknownMoviesPanel.unknownPostersModel.addAll(movieManager.notCreatedMovieDirs)
+                        existingMoviesPanel.reloadData(movieManager.createdMovieDirs)
+                        unknownMoviesPanel.reloadData(movieManager.notCreatedMovieDirs)
                     }
                 }
                 finally {
@@ -60,19 +59,16 @@ class Main(title: String) : JFrame() {
 }
 
 private fun createAndShowGUI() {
-
     val frame = Main("MovieInfoGenerator")
     frame.isVisible = true
-
 }
 
 fun main(args: Array<String>) {
-
     EventQueue.invokeLater(::createAndShowGUI)
 }
 
 fun loadConfig(): Config {
-    val configYaml = File(Generator::class.java.getResource("/config.yaml").file).readText()
+    val configYaml = File(Main::class.java.getResource("/config.yaml").file).readText()
     val mapper = ObjectMapper(YAMLFactory())
     return mapper.readValue(configYaml, Config::class.java)
 }

@@ -11,5 +11,11 @@ data class Config(
     var tmdbUrl: String,
 
     @JsonProperty("nasUrl")
-    var nasUrl: String
+    var nasUrl: String,
+
+    @JsonProperty("moviesDir")
+    var moviesDir: String,
+
+    @JsonProperty("ffprobePath")
+    var ffprobePath: String
 )

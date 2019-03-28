@@ -26,8 +26,8 @@ class TmdbReader(val url: String, val apiKey: String, val language: String) {
         .registerKotlinModule()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
-    fun searchMovie(title: String): TmdbSearch {
-        val jsonResult = URL("${url}3/search/movie?$movieReqString&query=$title&include_adult=false").readText()
+    fun searchMovie(title: String, page: Int = 1): TmdbSearch {
+        val jsonResult = URL("${url}3/search/movie$movieReqString&query=$title&include_adult=false&page=$page").readText()
         return jsonMapper.readValue(jsonResult, TmdbSearch::class.java)
     }
 

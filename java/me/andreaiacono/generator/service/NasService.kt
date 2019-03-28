@@ -6,7 +6,8 @@ import javax.imageio.ImageIO
 
 class NasService(val url: String) {
 
-    val LOG_TAG = this.javaClass.name
+    val movieExtensions: Set<String> =
+        setOf("mpg", "mpeg", "mp4", "m4p", "m4v", "avi", "mkv", "webm", "vob", "mov", "qt", "wmv")
 
     fun getMoviesDirectories(): Array<SmbFile> {
         val moviesRoot = SmbFile(url)
@@ -22,6 +23,12 @@ class NasService(val url: String) {
     fun getThumbnail(dirName: String): BufferedImage = getFullImage(dirName, "folder.jpg")
 
     fun getPoster(dirName: String): BufferedImage = getFullImage(dirName, "about.jpg")
+
+    fun getVideoFilename(dirName: String): String? {
+        val fullDirname = "$url$dirName"
+        println("get video dir: $fullDirname")
+        return SmbFile(fullDirname).listFiles().map { it.name }.firstOrNull { it.takeLast(3).toLowerCase() in movieExtensions }
+    }
 
 }
 

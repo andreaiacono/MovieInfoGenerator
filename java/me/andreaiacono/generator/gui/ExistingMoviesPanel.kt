@@ -8,19 +8,22 @@ import javax.swing.ListSelectionModel
 
 class ExistingMoviesPanel(val movieManager: MovieManager) : JPanel() {
 
-    val existingPostersModel = DefaultListModel<String>()
-    var selected = -1
+
+    private val listModel = DefaultListModel<String>()
+    private var selected = -1
 
     init {
         val posterViewer = PosterViewer()
-        val existingMoviesList = JList(existingPostersModel)
+        val existingMoviesList = JList(listModel)
+
+        existingMoviesList.model = listModel
         existingMoviesList.selectionMode = ListSelectionModel.SINGLE_SELECTION
         existingMoviesList.addListSelectionListener {
             if (existingMoviesList.selectedIndex != selected) {
                 selected = existingMoviesList.selectedIndex
                 cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
                 try {
-                    val dirName = (existingPostersModel[existingMoviesList.selectedIndex])
+                    val dirName = (listModel[existingMoviesList.selectedIndex])
                     posterViewer.setPoster(movieManager.getMoviePoster(dirName))
                 } finally {
                     cursor = Cursor.getDefaultCursor()
@@ -39,5 +42,10 @@ class ExistingMoviesPanel(val movieManager: MovieManager) : JPanel() {
         sl.putConstraint(SpringLayout.WEST, spDivider, 0, SpringLayout.WEST, this)
 
         add(spDivider)
+    }
+
+    fun reloadData(movies: List<String>) {
+        listModel.removeAllElements()
+        listModel.addAll(movies)
     }
 }
