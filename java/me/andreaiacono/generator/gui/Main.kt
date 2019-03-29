@@ -40,7 +40,7 @@ class Main(title: String) : JFrame() {
         menu.add(item)
         item.addActionListener {
 
-            runAsync(this, Runnable {
+            runAsync(this@Main, Runnable {
                 movieManager.loadData()
                 SwingUtilities.invokeLater {
                     existingMoviesPanel.reloadData(movieManager.createdMovieDirs)

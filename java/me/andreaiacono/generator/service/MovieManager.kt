@@ -28,7 +28,6 @@ class MovieManager(val config: Config) {
         println("Loading from NAS")
         nasService.getMoviesDirectories()
             .filter { it.isDirectory && !it.name.startsWith(".") }
-            .take(15)
             .forEach { dir ->
                 println("Reading [${dir.name}]")
                 val xml = dir
@@ -38,9 +37,7 @@ class MovieManager(val config: Config) {
                     unknownMovieDirs.add(Pair(dir.name.dropLast(1), dir.name.dropLast(1)))
                 } else {
                     val movie = fromXml(xml.inputStream.readBytes().toString(Charsets.UTF_8))
-                    println("added ${dir.name}: [${movie.title}]")
                     createdMovieDirs.add(Pair(movie.title, dir.name.dropLast(1)))
-                    unknownMovieDirs.add(Pair(movie.title, dir.name.dropLast(1)))
                 }
             }
         unknownMovieDirs.sortBy { it.first }
@@ -102,7 +99,7 @@ class MovieManager(val config: Config) {
         try {
             val xmlFilename = "${config.moviesDir}${dirName}info.xml"
             println("Writing xml to $xmlFilename")
-//            File(xmlFilename).writeText(xml)
+            File(xmlFilename).writeText(xml)
 
             val jpegParams = JPEGImageWriteParam(null)
             jpegParams.compressionMode = ImageWriteParam.MODE_EXPLICIT
@@ -112,7 +109,7 @@ class MovieManager(val config: Config) {
             println("Writing poster to $posterFilename")
             val posterWriter = ImageIO.getImageWritersByFormatName("jpg").next()
             posterWriter.output = FileImageOutputStream(File(posterFilename))
-//            posterWriter.write(null, IIOImage(image, null, null), jpegParams)
+            posterWriter.write(null, IIOImage(image, null, null), jpegParams)
 
             val coverFilename = "${config.moviesDir}${dirName}folder.jpg"
             println("Writing cover to $coverFilename")
@@ -120,7 +117,7 @@ class MovieManager(val config: Config) {
             jpegParams.compressionQuality = 0.95f
             val coverWriter = ImageIO.getImageWritersByFormatName("jpg").next()
             coverWriter.output = FileImageOutputStream(File(coverFilename))
-//            coverWriter.write(null, IIOImage(tmdbReader.getSmallSizePoster(coverUri), null, null), jpegParams)
+            coverWriter.write(null, IIOImage(tmdbReader.getSmallSizePoster(coverUri), null, null), jpegParams)
         } catch (ex: Exception) {
             ErrorForm(ex).isVisible = true
         }

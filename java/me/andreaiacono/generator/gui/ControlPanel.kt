@@ -1,10 +1,11 @@
 package me.andreaiacono.generator.gui
 
+import me.andreaiacono.generator.util.runAsync
 import javax.swing.*
 
 class ControlPanel(val previewPanel: PreviewPanel) : JPanel() {
 
-    private val textArea: JTextArea = JTextArea ()
+    private val textArea: JTextArea = JTextArea()
     private val imagesPanel: AlternateImagesPanel
 
     init {
@@ -19,7 +20,9 @@ class ControlPanel(val previewPanel: PreviewPanel) : JPanel() {
 
         val saveButton = JButton("Save")
         saveButton.addActionListener {
-            previewPanel.save(textArea.text)
+            runAsync(this@ControlPanel, Runnable {
+                previewPanel.save(textArea.text)
+            })
         }
         add(saveButton)
 
