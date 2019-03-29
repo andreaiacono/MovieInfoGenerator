@@ -19,6 +19,7 @@ class TmdbReader(val url: String, val apiKey: String, val language: String) {
 //    "still_sizes": ["w92", "w185", "w300", "original"]
 
     val movieReqString = "?api_key=$apiKey&language=$language"
+    val urlImage = "http://image.tmdb.org/t/p/"
     val urlImage154 = "http://image.tmdb.org/t/p/w154/"
     val urlImageOriginal = "http://image.tmdb.org/t/p/original/"
 
@@ -26,8 +27,19 @@ class TmdbReader(val url: String, val apiKey: String, val language: String) {
         .registerKotlinModule()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
+    fun getAlternativeImages(id: String): TmbdMovieImages {
+        val jsonResult =
+            URL("${url}3/movie/$id/images$movieReqString&include_image_language=en%2Cit%2Cfr%2Cuk").readText()
+        return jsonMapper.readValue(jsonResult, TmbdMovieImages::class.java)
+    }
+
     fun searchMovie(title: String, page: Int = 1): TmdbSearch {
-        val jsonResult = URL("${url}3/search/movie$movieReqString&query=${title.replace(" ", "%20")}&include_adult=false&page=$page").readText()
+        val jsonResult = URL(
+            "${url}3/search/movie$movieReqString&query=${title.replace(
+                " ",
+                "%20"
+            )}&include_adult=false&page=$page"
+        ).readText()
         return jsonMapper.readValue(jsonResult, TmdbSearch::class.java)
     }
 
@@ -37,13 +49,21 @@ class TmdbReader(val url: String, val apiKey: String, val language: String) {
         return jsonMapper.readValue(jsonResult, TmdbMovieInfo::class.java)
     }
 
-    fun getCover(imageId: String): BufferedImage {
-        val url = URL("$urlImage154$imageId")
-        return ImageIO.read(url)
+    fun getOriginalSizeImage(imagePath: String): BufferedImage {
+        return getImage(imagePath, "original")
     }
 
-    fun getBackground(imageId: String): BufferedImage {
-        val url = URL("$urlImageOriginal$imageId")
+    fun getSmallSizePoster(imagePath: String): BufferedImage {
+        return getImage(imagePath, "w154")
+    }
+
+    fun getSmallSizeBackdrop(imagePath: String): BufferedImage {
+        return getImage(imagePath, "w300")
+    }
+
+    private fun getImage(imagePath: String, size: String): BufferedImage {
+        val url = URL("$urlImage$size$imagePath")
+        println("Loading image from [$url]")
         return ImageIO.read(url)
     }
 }

@@ -22,6 +22,7 @@ class UnknownMoviesPanel(val movieManager: MovieManager) : JPanel() {
         leftPanel.layout = lsl
 
         val unknownMoviesList = JList(movieListModel)
+        unknownMoviesList.cellRenderer = MoviePairCellRenderer()
         val scrollableNotExistingMovieList = JScrollPane(unknownMoviesList)
         leftPanel.add(scrollableNotExistingMovieList)
 
@@ -82,6 +83,7 @@ class UnknownMoviesPanel(val movieManager: MovieManager) : JPanel() {
             if (unknownMoviesList.selectedIndex != selectedMovie) {
                 selectedMovie = unknownMoviesList.selectedIndex
                 titleInput.text = movieListModel[selectedMovie].first
+                previewPanel.clear()
                 searchMovie()
             }
         }
@@ -89,18 +91,23 @@ class UnknownMoviesPanel(val movieManager: MovieManager) : JPanel() {
         searchResultsList.selectionMode = ListSelectionModel.SINGLE_SELECTION
         searchResultsList.addListSelectionListener {
             if (searchResultsList.selectedIndex != selectedResult) {
+                previewPanel.clear()
                 selectedResult = searchResultsList.selectedIndex
                 cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
 
                 try {
-                    val id = (searchResultsListModel[searchResultsList.selectedIndex].substringAfterLast(" "))
-                    val dirName = movieListModel[unknownMoviesList.selectedIndex].second + "/"
-                    val (image, xml, coverUri) = movieManager.generatePoster(id, dirName)
-                    previewPanel.setPoster(image)
-                    previewPanel.setXml(xml)
-                    previewPanel.setDirname(dirName)
-                    previewPanel.setId(id)
-                    previewPanel.setCoverUri(coverUri)
+                    if (searchResultsList.selectedIndex >= 0) {
+                        val selected = searchResultsListModel[searchResultsList.selectedIndex]
+                        val id = selected.substringAfterLast(" ")
+                        val dirName = movieListModel[unknownMoviesList.selectedIndex].second + "/"
+                        previewPanel.loadAlternateImages(id, dirName)
+                        val (image, xml, coverUri) = movieManager.generatePoster(id, dirName)
+                        previewPanel.setPoster(image)
+                        previewPanel.setXml(xml)
+                        previewPanel.setDirname(dirName)
+                        previewPanel.setId(id)
+                        previewPanel.setCoverUri(coverUri)
+                    }
                 }
                 catch (ex: Exception) {
                     ErrorForm(ex).isVisible = true

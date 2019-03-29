@@ -14,7 +14,7 @@ class PreviewPanel(val movieManager: MovieManager) : JPanel() {
 
     init {
         val spDivider = JSplitPane(JSplitPane.VERTICAL_SPLIT, posterViewer, controlPanel)
-        spDivider.dividerLocation = 200
+        spDivider.dividerLocation = 400
         add(spDivider)
 
         val sl = SpringLayout()
@@ -48,5 +48,13 @@ class PreviewPanel(val movieManager: MovieManager) : JPanel() {
 
     fun setCoverUri(coverUri: String) {
         this.coverUri = coverUri
+    }
+
+    fun loadAlternateImages(movieId: String, dirName: String) {
+        controlPanel.loadImages(movieId, dirName)
+    }
+
+    fun clear() {
+        controlPanel.clear()
     }
 }

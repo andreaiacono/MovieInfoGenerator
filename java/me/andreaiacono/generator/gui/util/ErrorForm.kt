@@ -7,7 +7,7 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import javax.swing.*
 
-class ErrorForm(ex: Exception) : EscapableDialog(), ActionListener {
+class ErrorForm(ex: Exception, extraMessage: String = "") : EscapableDialog(), ActionListener {
 
     private val pane: JScrollPane
     private val jbDetails: JButton
@@ -18,7 +18,7 @@ class ErrorForm(ex: Exception) : EscapableDialog(), ActionListener {
         setSize(1000, 100)
         isResizable = true
 
-        val message = if (ex.message == null) "NullPointerException" else ex.message
+        val message = extraMessage + " - " + if (ex.message == null) "NullPointerException" else ex.message
         val sw = StringWriter()
         ex.printStackTrace(PrintWriter(sw))
 

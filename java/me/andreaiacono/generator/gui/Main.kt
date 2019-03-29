@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import me.andreaiacono.generator.model.Config
 import me.andreaiacono.generator.service.MovieManager
+import me.andreaiacono.generator.util.runAsync
 import java.awt.*
 import java.io.File
 import javax.swing.*
@@ -38,19 +39,14 @@ class Main(title: String) : JFrame() {
         val item = JMenuItem("Scan NAS")
         menu.add(item)
         item.addActionListener {
-            cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
-            Thread(Runnable {
-                try {
-                    movieManager.loadData()
-                    SwingUtilities.invokeLater {
-                        existingMoviesPanel.reloadData(movieManager.createdMovieDirs)
-                        unknownMoviesPanel.reloadData(movieManager.unknownMovieDirs)
-                    }
+
+            runAsync(this, Runnable {
+                movieManager.loadData()
+                SwingUtilities.invokeLater {
+                    existingMoviesPanel.reloadData(movieManager.createdMovieDirs)
+                    unknownMoviesPanel.reloadData(movieManager.unknownMovieDirs)
                 }
-                finally {
-                    cursor = Cursor.getDefaultCursor()
-                }
-            }).start()
+            })
         }
         jMenuBar = menuBar
 

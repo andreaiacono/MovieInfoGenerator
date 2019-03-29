@@ -2,17 +2,17 @@ package me.andreaiacono.generator.gui
 
 import javax.swing.*
 
-class ControlPanel(previewPanel: PreviewPanel) : JPanel() {
+class ControlPanel(val previewPanel: PreviewPanel) : JPanel() {
 
     private val textArea: JTextArea = JTextArea ()
+    private val imagesPanel: AlternateImagesPanel
 
     init {
         val sl = SpringLayout()
         layout = sl
 
-        val imagesPanel = JPanel()
-        val scrollableImages = JScrollPane(imagesPanel)
-        add(scrollableImages)
+        imagesPanel = AlternateImagesPanel(previewPanel)
+        add(imagesPanel)
 
         val scrollableTextArea = JScrollPane(textArea)
         add(scrollableTextArea)
@@ -23,12 +23,12 @@ class ControlPanel(previewPanel: PreviewPanel) : JPanel() {
         }
         add(saveButton)
 
-        sl.putConstraint(SpringLayout.NORTH, scrollableImages, 5, SpringLayout.NORTH, this)
-        sl.putConstraint(SpringLayout.SOUTH, scrollableImages, 250, SpringLayout.NORTH, this)
-        sl.putConstraint(SpringLayout.EAST, scrollableImages, -5, SpringLayout.EAST, this)
-        sl.putConstraint(SpringLayout.WEST, scrollableImages, 5, SpringLayout.WEST, this)
+        sl.putConstraint(SpringLayout.NORTH, imagesPanel, 5, SpringLayout.NORTH, this)
+        sl.putConstraint(SpringLayout.SOUTH, imagesPanel, 180, SpringLayout.NORTH, this)
+        sl.putConstraint(SpringLayout.EAST, imagesPanel, -5, SpringLayout.EAST, this)
+        sl.putConstraint(SpringLayout.WEST, imagesPanel, 5, SpringLayout.WEST, this)
 
-        sl.putConstraint(SpringLayout.NORTH, scrollableTextArea, 5, SpringLayout.SOUTH, scrollableImages)
+        sl.putConstraint(SpringLayout.NORTH, scrollableTextArea, 5, SpringLayout.SOUTH, imagesPanel)
         sl.putConstraint(SpringLayout.SOUTH, scrollableTextArea, -5, SpringLayout.NORTH, saveButton)
         sl.putConstraint(SpringLayout.EAST, scrollableTextArea, -5, SpringLayout.EAST, this)
         sl.putConstraint(SpringLayout.WEST, scrollableTextArea, 5, SpringLayout.WEST, this)
@@ -41,4 +41,13 @@ class ControlPanel(previewPanel: PreviewPanel) : JPanel() {
         textArea.text = xml
     }
 
+    fun loadImages(id: String, dirName: String) {
+        imagesPanel.loadImages(id, previewPanel.movieManager, dirName)
+    }
+
+    fun clear() {
+        imagesPanel.clear()
+        textArea.text = ""
+        updateUI()
+    }
 }

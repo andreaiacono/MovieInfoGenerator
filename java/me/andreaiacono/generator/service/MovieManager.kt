@@ -4,6 +4,7 @@ import me.andreaiacono.generator.Generator
 import me.andreaiacono.generator.Template
 import me.andreaiacono.generator.gui.util.ErrorForm
 import me.andreaiacono.generator.model.Config
+import me.andreaiacono.generator.model.TmbdMovieImages
 import me.andreaiacono.generator.model.fromXml
 import me.andreaiacono.generator.util.getMovieMetadata
 import net.coobird.thumbnailator.Thumbnails
@@ -39,6 +40,7 @@ class MovieManager(val config: Config) {
                     val movie = fromXml(xml.inputStream.readBytes().toString(Charsets.UTF_8))
                     println("added ${dir.name}: [${movie.title}]")
                     createdMovieDirs.add(Pair(movie.title, dir.name.dropLast(1)))
+                    unknownMovieDirs.add(Pair(movie.title, dir.name.dropLast(1)))
                 }
             }
         unknownMovieDirs.sortBy { it.first }
@@ -51,7 +53,7 @@ class MovieManager(val config: Config) {
         val results = mutableListOf<String>()
         results.addAll(search.results?.map { "${it?.title} [${it?.releaseDate}] ${it?.id}" }!!.toList())
 
-        for (i in 2..min(search.totalPages!!, 10)) {
+        for (i in 2..min(search.totalPages!!, 5)) {
             val pageSearch = tmdbReader.searchMovie(title, i)
             results.addAll(pageSearch.results?.map { "${it?.title} [${it?.releaseDate}] ${it?.id}" }!!.toList())
         }
@@ -59,11 +61,15 @@ class MovieManager(val config: Config) {
         return results
     }
 
+    fun getAlternativeImages(id: String): TmbdMovieImages {
+        return tmdbReader.getAlternativeImages(id)
+    }
+
     fun getMoviePoster(dirName: String): BufferedImage {
         return nasService.getPoster(dirName)
     }
 
-    fun generatePoster(id: String, dirName: String): Triple<BufferedImage, String, String> {
+    fun generatePoster(id: String, dirName: String, background: BufferedImage? = null): Triple<BufferedImage, String, String> {
 
         val videoFilename = nasService.getVideoFilename(dirName)
         if (videoFilename != null) {
@@ -72,16 +78,21 @@ class MovieManager(val config: Config) {
             val videoInfo = getMovieMetadata(config.ffprobePath, "${config.moviesDir}$dirName$videoFilename")
             val generator = Generator(movieInfo, videoInfo, template)
             val cover =
-                if (movieInfo.posterPath != null) Thumbnails.of(tmdbReader.getCover(movieInfo.posterPath!!)).forceSize(
+                if (movieInfo.posterPath != null) Thumbnails.of(tmdbReader.getSmallSizePoster(movieInfo.posterPath!!)).forceSize(
                     154,
                     231
                 ).asBufferedImage() else BufferedImage(1, 1, 1)
-            val background =
-                if (movieInfo.backdropPath != null) Thumbnails.of(tmdbReader.getBackground(movieInfo.backdropPath!!)).forceSize(
+            var backgroundImage = BufferedImage(1, 1, 1)
+            if (background != null) {
+                backgroundImage = background
+            }
+            else if (movieInfo.backdropPath != null) {
+                backgroundImage = Thumbnails.of(tmdbReader.getOriginalSizeImage(movieInfo.backdropPath!!)).forceSize(
                     1920,
                     1080
-                ).asBufferedImage() else BufferedImage(1, 1, 1)
-            return Triple(generator.generate(background, cover), movieInfo.toXml(), movieInfo.posterPath!!)
+                ).asBufferedImage()
+            }
+            return Triple(generator.generate(backgroundImage, cover), movieInfo.toXml(), movieInfo.posterPath ?: "")
         }
 
         return Triple(BufferedImage(1, 1, 1), "", "")
@@ -91,7 +102,7 @@ class MovieManager(val config: Config) {
         try {
             val xmlFilename = "${config.moviesDir}${dirName}info.xml"
             println("Writing xml to $xmlFilename")
-            File(xmlFilename).writeText(xml)
+//            File(xmlFilename).writeText(xml)
 
             val jpegParams = JPEGImageWriteParam(null)
             jpegParams.compressionMode = ImageWriteParam.MODE_EXPLICIT
@@ -101,7 +112,7 @@ class MovieManager(val config: Config) {
             println("Writing poster to $posterFilename")
             val posterWriter = ImageIO.getImageWritersByFormatName("jpg").next()
             posterWriter.output = FileImageOutputStream(File(posterFilename))
-            posterWriter.write(null, IIOImage(image, null, null), jpegParams)
+//            posterWriter.write(null, IIOImage(image, null, null), jpegParams)
 
             val coverFilename = "${config.moviesDir}${dirName}folder.jpg"
             println("Writing cover to $coverFilename")
@@ -109,11 +120,17 @@ class MovieManager(val config: Config) {
             jpegParams.compressionQuality = 0.95f
             val coverWriter = ImageIO.getImageWritersByFormatName("jpg").next()
             coverWriter.output = FileImageOutputStream(File(coverFilename))
-            coverWriter.write(null, IIOImage(tmdbReader.getCover(coverUri), null, null), jpegParams)
-        }
-        catch (ex: Exception) {
+//            coverWriter.write(null, IIOImage(tmdbReader.getSmallSizePoster(coverUri), null, null), jpegParams)
+        } catch (ex: Exception) {
             ErrorForm(ex).isVisible = true
         }
+    }
+
+    fun getAlternativeImageThumb(filePath: String?): BufferedImage {
+        return tmdbReader.getSmallSizeBackdrop(filePath ?: "null")
+    }
+    fun getAlternativeImageFullsize(filePath: String?): BufferedImage {
+        return tmdbReader.getOriginalSizeImage(filePath ?: "null")
     }
 }
 

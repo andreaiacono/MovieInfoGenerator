@@ -11,7 +11,7 @@ import java.awt.Insets
 
 class Generator(val movie: TmdbMovieInfo, val videoInfo: String, val template: Template) {
 
-    private val MAX_SYNOPSIS_LENGTH = 850
+    private val MAX_SYNOPSIS_LENGTH = 1050
 
     private val TITLE_FONT = Font("Din Condensed", Font.BOLD, 60)
     private val TITLE_COLOR = Color(140, 180, 180, 200)
