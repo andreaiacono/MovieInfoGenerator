@@ -29,7 +29,7 @@ class TmdbReader(val url: String, val apiKey: String, val language: String) {
 
     fun getAlternativeImages(id: String): TmbdMovieImages {
         val jsonResult =
-            URL("${url}3/movie/$id/images$movieReqString&include_image_language=en%2Cit%2Cfr%2Cuk").readText()
+            URL("${url}3/movie/$id/images$movieReqString&include_image_language=en%2Cit%2Cfr%2Cuk%2Cnull").readText()
         return jsonMapper.readValue(jsonResult, TmbdMovieImages::class.java)
     }
 
