@@ -19,7 +19,7 @@ class Main(title: String) : JFrame() {
         setTitle(title)
 
         defaultCloseOperation = JFrame.EXIT_ON_CLOSE
-        setSize(800, 600)
+        setSize(1200, 800)
         setLocationRelativeTo(null)
 
         val tabbedPane = JTabbedPane()
