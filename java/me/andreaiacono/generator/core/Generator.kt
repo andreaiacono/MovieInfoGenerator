@@ -12,6 +12,8 @@ import java.awt.Insets
 class Generator(val movie: TmdbMovieInfo, val videoInfo: String, val template: Template) {
 
     private val MAX_SYNOPSIS_LENGTH = 1050
+    val WIDTH = 1920
+    val HEIGHT = 1428
 
     private val TITLE_FONT = Font("Din Condensed", Font.BOLD, 60)
     private val TITLE_COLOR = Color(140, 180, 180, 200)
@@ -23,10 +25,15 @@ class Generator(val movie: TmdbMovieInfo, val videoInfo: String, val template: T
     private val INFO_COLOR = SYNOPSIS_COLOR
 
     fun generate(background: BufferedImage, cover: BufferedImage): BufferedImage {
-        val g = background.graphics as Graphics2D
-        val frame: BufferedImage = template.frame
-        g.drawImage(frame, 0, 0, null)
-        g.drawImage(cover, 14, 834, null)
+        val poster = BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB)
+        val g = poster.createGraphics()
+        g.color = Color.DARK_GRAY
+        g.fillRect(0, 0, WIDTH, HEIGHT)
+
+        var colTop = 1160 + 20
+        g.drawImage(background, 0, 80, null)
+        g.drawImage(template.frame, 0, 0, null)
+        g.drawImage(cover, 14, colTop, null)
 
         // draw title
         g.font = TITLE_FONT
@@ -35,7 +42,6 @@ class Generator(val movie: TmdbMovieInfo, val videoInfo: String, val template: T
         g.drawString("${movie.title?.toUpperCase()}  [${movie.releaseDate?.take(4)}]", computeLeftForCenter(background.width, movie.title!!, g), (g.font.size*1.055).toInt())
 
         val colLeft = 1653
-        var colTop = 830
 
         // draws synopsis
         val insets =  Insets(colTop, 184, 1100, colLeft - 60)
@@ -56,7 +62,7 @@ class Generator(val movie: TmdbMovieInfo, val videoInfo: String, val template: T
             colTop += (g.font.size*1.20).toInt()
         }
 
-        return background
+        return poster
     }
 
     private fun drawSynopsys(insets: Insets, g: Graphics2D) {
