@@ -11,7 +11,6 @@ import javax.swing.*
 import javax.swing.SwingUtilities
 import javax.swing.JTabbedPane
 
-
 class Main(title: String) : JFrame() {
 
     val movieManager = MovieManager(loadConfig())
@@ -52,6 +51,12 @@ class Main(title: String) : JFrame() {
 
         add(tabbedPane)
     }
+
+    fun loadConfig(): Config {
+        val configYaml = File(Main::class.java.getResource("/config.yaml").file).readText()
+        val mapper = ObjectMapper(YAMLFactory())
+        return mapper.readValue(configYaml, Config::class.java)
+    }
 }
 
 private fun createAndShowGUI() {
@@ -61,10 +66,4 @@ private fun createAndShowGUI() {
 
 fun main(args: Array<String>) {
     EventQueue.invokeLater(::createAndShowGUI)
-}
-
-fun loadConfig(): Config {
-    val configYaml = File(Main::class.java.getResource("/config.yaml").file).readText()
-    val mapper = ObjectMapper(YAMLFactory())
-    return mapper.readValue(configYaml, Config::class.java)
 }

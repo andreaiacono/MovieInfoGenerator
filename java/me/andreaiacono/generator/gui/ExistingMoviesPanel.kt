@@ -1,6 +1,7 @@
 package me.andreaiacono.generator.gui
 
 import me.andreaiacono.generator.gui.util.ErrorForm
+import me.andreaiacono.generator.gui.util.MoviePairCellRenderer
 import me.andreaiacono.generator.service.MovieManager
 import java.awt.Cursor
 import javax.swing.*
@@ -8,9 +9,6 @@ import javax.swing.ListSelectionModel
 import java.awt.Component
 import javax.swing.JList
 import javax.swing.DefaultListCellRenderer
-
-
-
 
 class ExistingMoviesPanel(val movieManager: MovieManager) : JPanel() {
 
@@ -59,13 +57,5 @@ class ExistingMoviesPanel(val movieManager: MovieManager) : JPanel() {
     fun reloadData(movies: List<Pair<String, String>>) {
         listModel.removeAllElements()
         listModel.addAll(movies)
-    }
-}
-
-class MoviePairCellRenderer : DefaultListCellRenderer() {
-    override fun getListCellRendererComponent(list: JList<*>?, value: Any?, index: Int, isSelected: Boolean, cellHasFocus: Boolean): Component {
-        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus)
-        text = (value as Pair<String, String>).first
-        return this
     }
 }
