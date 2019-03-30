@@ -23,8 +23,8 @@ class Main(title: String) : JFrame() {
         setLocationRelativeTo(null)
 
         val tabbedPane = JTabbedPane()
-        val existingMoviesPanel = ExistingMoviesPanel(movieManager)
-        val unknownMoviesPanel = UnknownMoviesPanel(movieManager)
+        val existingMoviesPanel = ExistingMoviesTab(movieManager)
+        val unknownMoviesPanel = UnknownMoviesTab(movieManager)
 
         tabbedPane.addTab("Existing Movies", existingMoviesPanel)
         tabbedPane.addTab("Unknown Movies", unknownMoviesPanel)

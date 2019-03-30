@@ -6,11 +6,9 @@ import me.andreaiacono.generator.service.MovieManager
 import java.awt.Cursor
 import javax.swing.*
 import javax.swing.ListSelectionModel
-import java.awt.Component
 import javax.swing.JList
-import javax.swing.DefaultListCellRenderer
 
-class ExistingMoviesPanel(val movieManager: MovieManager) : JPanel() {
+class ExistingMoviesTab(val movieManager: MovieManager) : JPanel() {
 
 
     private val listModel = DefaultListModel<Pair<String, String>>()

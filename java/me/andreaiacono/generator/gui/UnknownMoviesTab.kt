@@ -6,7 +6,7 @@ import me.andreaiacono.generator.service.MovieManager
 import java.awt.Cursor
 import javax.swing.*
 
-class UnknownMoviesPanel(val movieManager: MovieManager) : JPanel() {
+class UnknownMoviesTab(val movieManager: MovieManager) : JPanel() {
 
     val movieListModel = DefaultListModel<Pair<String, String>>()
     val searchResultsListModel = DefaultListModel<String>()

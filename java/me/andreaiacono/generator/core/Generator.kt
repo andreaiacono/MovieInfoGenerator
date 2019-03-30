@@ -25,7 +25,7 @@ class Generator(val movie: TmdbMovieInfo, val videoInfo: String, val template: T
     private val INFO_COLOR = SYNOPSIS_COLOR
 
     fun generate(background: BufferedImage, cover: BufferedImage): BufferedImage {
-        val poster = BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB)
+        val poster = BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB)
         val g = poster.createGraphics()
         g.color = Color.DARK_GRAY
         g.fillRect(0, 0, WIDTH, HEIGHT)
