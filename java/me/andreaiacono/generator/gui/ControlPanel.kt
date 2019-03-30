@@ -27,7 +27,7 @@ class ControlPanel(val previewPanel: PreviewPanel) : JPanel() {
         add(saveButton)
 
         sl.putConstraint(SpringLayout.NORTH, imagesPanel, 5, SpringLayout.NORTH, this)
-        sl.putConstraint(SpringLayout.SOUTH, imagesPanel, 180, SpringLayout.NORTH, this)
+        sl.putConstraint(SpringLayout.SOUTH, imagesPanel, 205, SpringLayout.NORTH, this)
         sl.putConstraint(SpringLayout.EAST, imagesPanel, -5, SpringLayout.EAST, this)
         sl.putConstraint(SpringLayout.WEST, imagesPanel, 5, SpringLayout.WEST, this)
 

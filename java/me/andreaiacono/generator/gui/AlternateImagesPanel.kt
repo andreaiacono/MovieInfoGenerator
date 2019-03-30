@@ -2,6 +2,7 @@ package me.andreaiacono.generator.gui
 
 import me.andreaiacono.generator.service.MovieManager
 import me.andreaiacono.generator.util.runAsync
+import net.coobird.thumbnailator.Thumbnails
 import java.awt.FlowLayout
 import java.awt.event.MouseAdapter
 import java.awt.image.BufferedImage
@@ -44,7 +45,7 @@ class AlternateImagesPanel(val previewPanel: PreviewPanel) : JPanel() {
                     override fun mouseClicked(e: MouseEvent) {
                         if (e.button == MouseEvent.BUTTON1) {
                             runAsync(scrollPane, Runnable {
-                                val fullsizeImage = movieManager.getAlternativeImageFullsize(it?.filePath)
+                                val fullsizeImage = Thumbnails.of(movieManager.getAlternativeImageFullsize(it?.filePath)).forceSize(1920, 1080).asBufferedImage()
                                 val (poster, xml, coverUri) = movieManager.generatePoster(movieId, dirName, fullsizeImage)
                                 previewPanel.setPoster(poster)
                                 previewPanel.setXml(xml)

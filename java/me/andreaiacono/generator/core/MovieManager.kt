@@ -1,13 +1,10 @@
 package me.andreaiacono.generator.service
 
-import me.andreaiacono.generator.Generator
-import me.andreaiacono.generator.Template
+import me.andreaiacono.generator.core.MoviePreview
 import me.andreaiacono.generator.gui.util.ErrorForm
 import me.andreaiacono.generator.model.Config
 import me.andreaiacono.generator.model.TmbdMovieImages
 import me.andreaiacono.generator.model.fromXml
-import me.andreaiacono.generator.util.getMovieMetadata
-import net.coobird.thumbnailator.Thumbnails
 import java.awt.image.BufferedImage
 import java.io.File
 import java.lang.Math.min
@@ -23,6 +20,7 @@ class MovieManager(val config: Config) {
     val unknownMovieDirs = mutableListOf<Pair<String, String>>()
     val nasService = NasService(config.nasUrl)
     val tmdbReader = TmdbReader(config.tmdbUrl, config.tmdbApiKey, "it-IT")
+    val moviePreview = MoviePreview(this)
 
     fun loadData() {
         println("Loading from NAS")
@@ -58,43 +56,6 @@ class MovieManager(val config: Config) {
         return results
     }
 
-    fun getAlternativeImages(id: String): TmbdMovieImages {
-        return tmdbReader.getAlternativeImages(id)
-    }
-
-    fun getMoviePoster(dirName: String): BufferedImage {
-        return nasService.getPoster(dirName)
-    }
-
-    fun generatePoster(id: String, dirName: String, background: BufferedImage? = null): Triple<BufferedImage, String, String> {
-
-        val videoFilename = nasService.getVideoFilename(dirName)
-        if (videoFilename != null) {
-            val template = Template()
-            val movieInfo = tmdbReader.getMovieInfo(id)
-            val videoInfo = getMovieMetadata(config.ffprobePath, "${config.moviesDir}$dirName$videoFilename")
-            val generator = Generator(movieInfo, videoInfo, template)
-            val cover =
-                if (movieInfo.posterPath != null) Thumbnails.of(tmdbReader.getSmallSizePoster(movieInfo.posterPath!!)).forceSize(
-                    154,
-                    231
-                ).asBufferedImage() else BufferedImage(1, 1, 1)
-            var backgroundImage = BufferedImage(1, 1, 1)
-            if (background != null) {
-                backgroundImage = background
-            }
-            else if (movieInfo.backdropPath != null) {
-                backgroundImage = Thumbnails.of(tmdbReader.getOriginalSizeImage(movieInfo.backdropPath!!)).forceSize(
-                    1920,
-                    1080
-                ).asBufferedImage()
-            }
-            return Triple(generator.generate(backgroundImage, cover), movieInfo.toXml(), movieInfo.posterPath ?: "")
-        }
-
-        return Triple(BufferedImage(1, 1, 1), "", "")
-    }
-
     fun saveData(image: BufferedImage?, xml: String, dirName: String, id: String, coverUri: String) {
         try {
             val xmlFilename = "${config.moviesDir}${dirName}info.xml"
@@ -106,21 +67,29 @@ class MovieManager(val config: Config) {
             jpegParams.compressionQuality = 0.75f
 
             val posterFilename = "${config.moviesDir}${dirName}about.jpg"
-            println("Writing poster to $posterFilename")
             val posterWriter = ImageIO.getImageWritersByFormatName("jpg").next()
+            println("Writing poster to $posterFilename")
             posterWriter.output = FileImageOutputStream(File(posterFilename))
             posterWriter.write(null, IIOImage(image, null, null), jpegParams)
 
             val coverFilename = "${config.moviesDir}${dirName}folder.jpg"
-            println("Writing cover to $coverFilename")
-
             jpegParams.compressionQuality = 0.95f
             val coverWriter = ImageIO.getImageWritersByFormatName("jpg").next()
+            println("Writing cover to $coverFilename")
             coverWriter.output = FileImageOutputStream(File(coverFilename))
             coverWriter.write(null, IIOImage(tmdbReader.getSmallSizePoster(coverUri), null, null), jpegParams)
-        } catch (ex: Exception) {
+        }
+        catch (ex: Exception) {
             ErrorForm(ex).isVisible = true
         }
+    }
+
+    fun getAlternativeImages(id: String): TmbdMovieImages {
+        return tmdbReader.getAlternativeImages(id)
+    }
+
+    fun getMoviePoster(dirName: String): BufferedImage {
+        return nasService.getPoster(dirName)
     }
 
     fun getAlternativeImageThumb(filePath: String?): BufferedImage {
@@ -128,6 +97,10 @@ class MovieManager(val config: Config) {
     }
     fun getAlternativeImageFullsize(filePath: String?): BufferedImage {
         return tmdbReader.getOriginalSizeImage(filePath ?: "null")
+    }
+
+    fun generatePoster(id: String, dirName: String, chosenBackgroundImage: BufferedImage? = null): Triple<BufferedImage, String, String> {
+        return moviePreview.generatePoster(id, dirName, chosenBackgroundImage)
     }
 }
 

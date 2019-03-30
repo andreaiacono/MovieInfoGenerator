@@ -4,7 +4,10 @@ import me.andreaiacono.generator.gui.util.ErrorForm
 import net.bramp.ffmpeg.FFprobe
 import java.awt.Component
 import java.awt.Cursor
+import java.awt.image.BufferedImage
 import javax.swing.SwingUtilities
+
+val EMPTY_IMAGE: BufferedImage = BufferedImage(1, 1, 1)
 
 fun getMovieMetadata(ffprobePath: String, filename: String): String {
     val ffprobe = FFprobe(ffprobePath)
