@@ -52,8 +52,8 @@ class Main(title: String) : JFrame() {
         add(tabbedPane)
     }
 
-    fun loadConfig(): Config {
-        val configYaml = File(Main::class.java.getResource("/config.yaml").file).readText()
+    private fun loadConfig(): Config {
+        val configYaml = String(Main::class.java.getResourceAsStream("/config.yaml").readBytes())
         val mapper = ObjectMapper(YAMLFactory())
         return mapper.readValue(configYaml, Config::class.java)
     }

@@ -127,16 +127,18 @@ class UnknownMoviesTab(val movieManager: MovieManager) : JPanel() {
             val title = titleInput.text
             val results = movieManager.searchMovie(title)
             searchResultsListModel.removeAllElements()
-            searchResultsListModel.addAll(results)
-        } catch (ex: Exception) {
+            results.forEach { searchResultsListModel.addElement(it) }
+        }
+        catch (ex: Exception) {
             ErrorForm(ex).isVisible = true
-        } finally {
+        }
+        finally {
             cursor = Cursor.getDefaultCursor()
         }
     }
 
     fun reloadData(movies: List<Pair<String, String>>) {
         movieListModel.removeAllElements()
-        movieListModel.addAll(movies)
+        movies.forEach { movieListModel.addElement(it) }
     }
 }

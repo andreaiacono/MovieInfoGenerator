@@ -54,6 +54,6 @@ class ExistingMoviesTab(val movieManager: MovieManager) : JPanel() {
 
     fun reloadData(movies: List<Pair<String, String>>) {
         listModel.removeAllElements()
-        listModel.addAll(movies)
+        movies.forEach { listModel.addElement(it) }
     }
 }
