@@ -3,10 +3,9 @@ package me.andreaiacono.generator.gui
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import me.andreaiacono.generator.model.Config
-import me.andreaiacono.generator.service.MovieManager
+import me.andreaiacono.generator.core.MovieManager
 import me.andreaiacono.generator.util.runAsync
 import java.awt.*
-import java.io.File
 import javax.swing.*
 import javax.swing.SwingUtilities
 import javax.swing.JTabbedPane

@@ -2,7 +2,7 @@ package me.andreaiacono.generator.gui
 
 import me.andreaiacono.generator.gui.util.ErrorForm
 import me.andreaiacono.generator.gui.util.MoviePairCellRenderer
-import me.andreaiacono.generator.service.MovieManager
+import me.andreaiacono.generator.core.MovieManager
 import java.awt.Cursor
 import javax.swing.*
 
@@ -85,7 +85,10 @@ class UnknownMoviesTab(val movieManager: MovieManager) : JPanel() {
                 selectedMovie = unknownMoviesList.selectedIndex
                 titleInput.text = movieListModel[selectedMovie].first
                 previewPanel.clear()
-                searchMovie()
+                val default = searchMovie()
+                if (default != "") {
+                    searchResultsList.selectedIndex = 0
+                }
             }
         }
 
@@ -106,7 +109,6 @@ class UnknownMoviesTab(val movieManager: MovieManager) : JPanel() {
                         previewPanel.setPoster(image)
                         previewPanel.setXml(xml)
                         previewPanel.setDirname(dirName)
-                        previewPanel.setId(id)
                         previewPanel.setCoverUri(coverUri)
                     }
                 }
@@ -121,13 +123,14 @@ class UnknownMoviesTab(val movieManager: MovieManager) : JPanel() {
         add(spDivider)
     }
 
-    private fun searchMovie() {
+    private fun searchMovie(): String {
         cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
         try {
             val title = titleInput.text
             val results = movieManager.searchMovie(title)
             searchResultsListModel.removeAllElements()
             results.forEach { searchResultsListModel.addElement(it) }
+            return if (results.isEmpty()) "" else results[0]
         }
         catch (ex: Exception) {
             ErrorForm(ex).isVisible = true
@@ -135,6 +138,7 @@ class UnknownMoviesTab(val movieManager: MovieManager) : JPanel() {
         finally {
             cursor = Cursor.getDefaultCursor()
         }
+        return ""
     }
 
     fun reloadData(movies: List<Pair<String, String>>) {

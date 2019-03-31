@@ -1,6 +1,6 @@
 package me.andreaiacono.generator.gui
 
-import me.andreaiacono.generator.service.MovieManager
+import me.andreaiacono.generator.core.MovieManager
 import java.awt.image.BufferedImage
 import javax.swing.*
 
@@ -9,7 +9,6 @@ class PreviewPanel(val movieManager: MovieManager) : JPanel() {
     private val posterViewer: PosterViewer = PosterViewer()
     private val xmlPanel: XmlPanel = XmlPanel(this)
     private lateinit var dirName: String
-    private lateinit var id: String
     private lateinit var coverUri: String
 
     private val imagesPanel: AlternateImagesPanel
@@ -47,15 +46,11 @@ class PreviewPanel(val movieManager: MovieManager) : JPanel() {
     }
 
     fun save(xml: String) {
-        movieManager.saveData(posterViewer.image, xml, dirName, id, coverUri)
+        movieManager.saveData(posterViewer.image, xml, dirName, coverUri)
     }
 
     fun setDirname(dirName: String) {
         this.dirName = dirName
-    }
-
-    fun setId(id: String) {
-        this.id = id
     }
 
     fun setCoverUri(coverUri: String) {

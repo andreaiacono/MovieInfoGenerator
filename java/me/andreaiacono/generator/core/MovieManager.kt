@@ -1,10 +1,13 @@
-package me.andreaiacono.generator.service
+package me.andreaiacono.generator.core
 
 import me.andreaiacono.generator.core.MoviePreview
 import me.andreaiacono.generator.gui.util.ErrorForm
 import me.andreaiacono.generator.model.Config
 import me.andreaiacono.generator.model.TmbdMovieImages
+import me.andreaiacono.generator.model.TmdbSearch
 import me.andreaiacono.generator.model.fromXml
+import me.andreaiacono.generator.service.NasService
+import me.andreaiacono.generator.service.TmdbReader
 import java.awt.image.BufferedImage
 import java.io.File
 import java.lang.Math.min
@@ -46,6 +49,7 @@ class MovieManager(val config: Config) {
 
         val search = tmdbReader.searchMovie(title)
         val results = mutableListOf<String>()
+        val firstResult: TmdbSearch.Result? = if (search.results.isNullOrEmpty()) null else search.results[0]
         results.addAll(search.results?.map { "${it?.title} [${it?.releaseDate}] ${it?.id}" }!!.toList())
 
         for (i in 2..min(search.totalPages!!, 5)) {
@@ -53,10 +57,12 @@ class MovieManager(val config: Config) {
             results.addAll(pageSearch.results?.map { "${it?.title} [${it?.releaseDate}] ${it?.id}" }!!.toList())
         }
         results.sort()
-        return results
+        val list = mutableListOf("${firstResult?.title} [${firstResult?.releaseDate}] ${firstResult?.id}")
+        list.addAll(results)
+        return list
     }
 
-    fun saveData(image: BufferedImage?, xml: String, dirName: String, id: String, coverUri: String) {
+    fun saveData(image: BufferedImage?, xml: String, dirName: String, coverUri: String) {
         try {
             val xmlFilename = "${config.moviesDir}${dirName}info.xml"
             println("Writing xml to $xmlFilename")

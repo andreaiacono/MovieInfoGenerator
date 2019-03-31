@@ -3,7 +3,6 @@ package me.andreaiacono.generator.core
 import me.andreaiacono.generator.Generator
 import me.andreaiacono.generator.Template
 import me.andreaiacono.generator.model.TmdbMovieInfo
-import me.andreaiacono.generator.service.MovieManager
 import me.andreaiacono.generator.util.EMPTY_IMAGE
 import me.andreaiacono.generator.util.getMovieMetadata
 import net.coobird.thumbnailator.Thumbnails

@@ -1,8 +1,8 @@
 package me.andreaiacono.generator.gui
 
+import me.andreaiacono.generator.core.MovieManager
 import me.andreaiacono.generator.gui.util.ErrorForm
 import me.andreaiacono.generator.gui.util.MoviePairCellRenderer
-import me.andreaiacono.generator.service.MovieManager
 import java.awt.Cursor
 import javax.swing.*
 import javax.swing.ListSelectionModel

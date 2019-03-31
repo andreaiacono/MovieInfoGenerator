@@ -1,6 +1,6 @@
 package me.andreaiacono.generator.gui
 
-import me.andreaiacono.generator.service.MovieManager
+import me.andreaiacono.generator.core.MovieManager
 import me.andreaiacono.generator.util.runAsync
 import net.coobird.thumbnailator.Thumbnails
 import java.awt.FlowLayout
