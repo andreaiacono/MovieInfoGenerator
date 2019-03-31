@@ -69,5 +69,6 @@ class PreviewPanel(val movieManager: MovieManager) : JPanel() {
     fun clear() {
         imagesPanel.clear()
         xmlPanel.clear()
+        posterViewer.clear()
     }
 }

@@ -20,8 +20,6 @@ class TmdbReader(val url: String, val apiKey: String, val language: String) {
 
     val movieReqString = "?api_key=$apiKey&language=$language"
     val urlImage = "http://image.tmdb.org/t/p/"
-    val urlImage154 = "http://image.tmdb.org/t/p/w154/"
-    val urlImageOriginal = "http://image.tmdb.org/t/p/original/"
 
     private val jsonMapper = jacksonObjectMapper()
         .registerKotlinModule()
@@ -54,7 +52,7 @@ class TmdbReader(val url: String, val apiKey: String, val language: String) {
     }
 
     fun getSmallSizePoster(imagePath: String): BufferedImage {
-        return getImage(imagePath, "w154")
+        return getImage(imagePath, "w342")
     }
 
     fun getSmallSizeBackdrop(imagePath: String): BufferedImage {

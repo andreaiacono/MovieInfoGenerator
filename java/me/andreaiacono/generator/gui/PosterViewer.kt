@@ -33,4 +33,11 @@ class PosterViewer : JPanel() {
         invalidate()
         repaint()
     }
+
+    fun clear() {
+        this.image = null
+        invalidate()
+        repaint()
+        isDisplayed = false
+    }
 }

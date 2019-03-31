@@ -13,14 +13,17 @@ class Generator(val movie: TmdbMovieInfo, val videoInfo: String, val template: T
 
     private val MAX_SYNOPSIS_LENGTH = 1050
     val WIDTH = 1920
-    val HEIGHT = 1428
+    val HEIGHT = 1341
 
     private val TITLE_FONT = Font("Din Condensed", Font.BOLD, 60)
+//    private val TITLE_FONT = Font("Yanone Kaffeesatz", Font.BOLD, 60)
     private val TITLE_COLOR = Color(140, 180, 180, 200)
 
-    private val SYNOPSIS_FONT = Font("Gill Sans", Font.PLAIN, 27)
+    private val SYNOPSIS_FONT = Font("Gill Sans", Font.BOLD, 27)
+//    private val SYNOPSIS_FONT = Font("Linux Biolinum", Font.PLAIN, 27)
     private val SYNOPSIS_COLOR = Color(180, 220, 220, 200)
 
+//    private val INFO_FONT = Font("Linux Biolinum", Font.PLAIN, 24)
     private val INFO_FONT = Font("Gill Sans", Font.PLAIN, 24)
     private val INFO_COLOR = SYNOPSIS_COLOR
 
@@ -30,8 +33,9 @@ class Generator(val movie: TmdbMovieInfo, val videoInfo: String, val template: T
         g.color = Color.DARK_GRAY
         g.fillRect(0, 0, WIDTH, HEIGHT)
 
-        var colTop = 1160 + 20
-        g.drawImage(background, 0, 80, null)
+        var colTop = 1075 + 20
+        g.drawImage(background, 0, 0, null)
+//        g.drawImage(background, 0, 80, null)
         g.drawImage(template.frame, 0, 0, null)
         g.drawImage(cover, 14, colTop, null)
 
@@ -50,6 +54,7 @@ class Generator(val movie: TmdbMovieInfo, val videoInfo: String, val template: T
         // draw movie info
         g.font = INFO_FONT
         g.color = INFO_COLOR
+        colTop -= 5
         colTop += (g.font.size * 0.7).toInt()
         g.drawString(videoInfo, colLeft, colTop)
         colTop += (g.font.size * 1.4).toInt()
