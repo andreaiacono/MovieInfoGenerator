@@ -19,7 +19,7 @@ class Generator(val movie: TmdbMovieInfo, val videoInfo: String, val template: T
 //    private val TITLE_FONT = Font("Yanone Kaffeesatz", Font.BOLD, 60)
     private val TITLE_COLOR = Color(140, 180, 180, 200)
 
-    private val SYNOPSIS_FONT = Font("Gill Sans", Font.BOLD, 27)
+    private val SYNOPSIS_FONT = Font("Gill Sans", Font.BOLD, 28)
 //    private val SYNOPSIS_FONT = Font("Linux Biolinum", Font.PLAIN, 27)
     private val SYNOPSIS_COLOR = Color(180, 220, 220, 200)
 
@@ -33,17 +33,18 @@ class Generator(val movie: TmdbMovieInfo, val videoInfo: String, val template: T
         g.color = Color.DARK_GRAY
         g.fillRect(0, 0, WIDTH, HEIGHT)
 
-        var colTop = 1075 + 20
+        var colTop = 1065 + 20
         g.drawImage(background, 0, 0, null)
 //        g.drawImage(background, 0, 80, null)
         g.drawImage(template.frame, 0, 0, null)
         g.drawImage(cover, 14, colTop, null)
 
         // draw title
+        val title = "${movie.title?.toUpperCase()}  [${movie.releaseDate?.take(4)}]"
         g.font = TITLE_FONT
         g.color = TITLE_COLOR
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
-        g.drawString("${movie.title?.toUpperCase()}  [${movie.releaseDate?.take(4)}]", computeLeftForCenter(background.width, movie.title!!, g), (g.font.size*1.055).toInt())
+        g.drawString(title, computeLeftForCenter(background.width, title, g), (g.font.size*1.055).toInt())
 
         val colLeft = 1653
 
@@ -54,7 +55,7 @@ class Generator(val movie: TmdbMovieInfo, val videoInfo: String, val template: T
         // draw movie info
         g.font = INFO_FONT
         g.color = INFO_COLOR
-        colTop -= 5
+        colTop += 5
         colTop += (g.font.size * 0.7).toInt()
         g.drawString(videoInfo, colLeft, colTop)
         colTop += (g.font.size * 1.4).toInt()
@@ -71,9 +72,9 @@ class Generator(val movie: TmdbMovieInfo, val videoInfo: String, val template: T
     }
 
     private fun drawSynopsys(insets: Insets, g: Graphics2D) {
-        val overview: String = movie.overview.orEmpty()
+        val overview: String = movie.overview.orEmpty().take(500)
         g.font = SYNOPSIS_FONT
-        g.font = Font("Gill Sans", Font.PLAIN, 35 - (overview.length / 100))
+        g.font = Font("Gill Sans", Font.PLAIN, 37 - (overview.length / 50))
         g.color = SYNOPSIS_COLOR
         val frc = g.fontRenderContext
         val synopsis = if (overview.length < MAX_SYNOPSIS_LENGTH) movie.overview else overview.take(MAX_SYNOPSIS_LENGTH) + "[...]"
@@ -86,7 +87,7 @@ class Generator(val movie: TmdbMovieInfo, val videoInfo: String, val template: T
         var x = insets.left.toFloat()
         while (measurer.position < messageIterator.endIndex) {
             val textLayout = measurer.nextLayout(wrappingWidth)
-            y += textLayout.ascent.toInt()
+            y += textLayout.ascent.toInt() + 4
             textLayout.draw(g, x, y)
             y += textLayout.descent.toInt() + textLayout.leading.toInt()
             x = insets.left.toFloat()
