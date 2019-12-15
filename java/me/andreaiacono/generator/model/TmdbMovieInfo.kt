@@ -197,6 +197,7 @@ data class TmdbMovieInfo(
         <plot>$overview</plot>
         <date>${getCurrentDate()}</date>
         <runtime>$runtime</runtime>
+        <seen>false</seen>
         <genres>
 ${genres?.joinToString("") { "            <genre>${it?.name}</genre>\n" }}        </genres>
         <director>
