@@ -74,7 +74,7 @@ class Generator(val movie: TmdbMovieInfo, val videoInfo: String, val template: T
     private fun drawSynopsys(insets: Insets, g: Graphics2D) {
         val overview: String = movie.overview.orEmpty().take(500)
         g.font = SYNOPSIS_FONT
-        g.font = Font("Gill Sans", Font.PLAIN, 37 - (overview.length / 50))
+        g.font = Font("Gill Sans", Font.PLAIN, 37 - (overview.length / 40))
         g.color = SYNOPSIS_COLOR
         val frc = g.fontRenderContext
         val synopsis = if (overview.length < MAX_SYNOPSIS_LENGTH) movie.overview else overview.take(MAX_SYNOPSIS_LENGTH) + "[...]"

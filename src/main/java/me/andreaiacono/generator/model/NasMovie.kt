@@ -46,7 +46,7 @@ data class NasMovie (
     val genres: List<String> = listOf(),
 
     @JacksonXmlElementWrapper(localName = "cast")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+//    @JsonInclude(JsonInclude.Include.NON_NULL)
     val cast: List<String> = listOf(),
 
     @JacksonXmlProperty(localName = "director")

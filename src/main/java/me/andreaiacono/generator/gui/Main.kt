@@ -17,7 +17,7 @@ class Main(title: String) : JFrame() {
     init {
         setTitle(title)
 
-        defaultCloseOperation = JFrame.EXIT_ON_CLOSE
+        defaultCloseOperation = EXIT_ON_CLOSE
         setSize(1200, 800)
         setLocationRelativeTo(null)
 

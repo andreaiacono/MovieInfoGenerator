@@ -56,7 +56,7 @@ data class TmdbMovieInfo(
     val releaseDate: String? = "",
 
     @JsonProperty("revenue")
-    val revenue: Int? = 0,
+    val revenue: Long? = 0,
 
     @JsonProperty("runtime")
     val runtime: Int? = 0,
